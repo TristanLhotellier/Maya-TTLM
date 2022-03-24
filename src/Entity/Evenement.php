@@ -21,7 +21,14 @@ class Evenement
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *     min = 3,
+     *     max = 50,
+     *     minMessage = "Ce titre est trop court",
+     *     maxMessage = "Ce titre est trop long"
+     * )
      */
     private $titre;
 

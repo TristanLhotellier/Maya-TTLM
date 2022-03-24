@@ -143,7 +143,7 @@ public function supprimer(Evenement $evenement = null, Request $request, EntityM
         $entityManager->flush();
         $this->addFlash(
             'success',
-            'L\'évenement'  . $evenement->getTitre() . ' a été supprimée.'
+            'L\'évenement '  . $evenement->getTitre() . ' a été supprimée.'
         );
     }
     return $this->redirectToRoute('evenement');

@@ -5,8 +5,23 @@
 {% block body %}
 <div class="col-md-20 contenu-blanc">
 
+        
+        {% if lesEvenements | length > 1 %}
         <h1>Les <span> {{  lesEvenements | length }}  </span>evénements</h1>
         {{ include('messages.html.twig') }}
+        {% endif %}
+
+        {% if lesEvenements | length == 1  %}
+        <h1>L'évenement</h1>
+        {{ include('messages.html.twig') }}
+        {% endif %}
+
+        {% if lesEvenements | length == 0  %}
+        <h1>Aucun évenement</h1>
+        {{ include('messages.html.twig') }}
+        {% endif %}
+
+
         <div class="contenu">
             <table class="table table-striped table-advance table-hover">
                 <thead>
