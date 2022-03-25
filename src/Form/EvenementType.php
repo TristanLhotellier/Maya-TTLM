@@ -6,17 +6,43 @@ use App\Entity\Evenement;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
+
 
 class EvenementType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titre')
-            ->add('description')
-            ->add('date')
-            ->add('heureDebut')
-            ->add('heureFin')
+            ->add('titre', TextType::class, [
+                'label' => 'Titre'
+            ] )
+
+            ->add('description', TextType::class, [
+                'label' => 'Description'
+            ] )
+            ->add('date', DateType::class, [
+                'label' => 'Description',
+                'widget' => 'single_text',
+            ] )
+            ->add('heureDebut', TimeType::class, [
+                'label' => 'Heure de début',
+                'widget' => 'single_text',
+            ] )
+            ->add('heureFin', TimeType::class, [
+                'label' => 'Heure de Fin',
+                'widget' => 'single_text',
+            ] )
+            // -> add('evenement', EntityType::class, [
+            //     'label' => 'Evenement',
+            //     'class' => Evenement::class,
+            //     'choice_label' => 'libelle',
+            //     'multiple' => false,
+            //     'expanded' => false
+            // ])
         ;
     }
 
