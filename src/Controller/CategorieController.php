@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Categorie;
 use App\Form\CategorieType;
 use App\Repository\CategorieRepository;
@@ -25,12 +26,14 @@ class CategorieController extends AbstractController
          $formCreation = $this->createForm(CategorieType::class, $categorie);
         
             // si 2e route alors $id est renseigné et on  crée le formulaire de modification
-        if ($id != null) {
-            $evenementModif = $repository->find($id);   // l'évenement à modifier
-            $formModificationView = $this->createForm(EvenementType::class, $evenementModif)->createView();
-        } else {
-            $formModificationView = null;
+    $formModificationView = null;
+    if ($id != null) {
+        // sécurité supplémentaire, on vérifie le token
+        if ($this->isCsrfTokenValid('action-item'.$id, $request->get('_token'))) {
+            $categorieModif = $repository->find($id);   // la catégorie à modifier
+            $formModificationView = $this->createForm(CategorieType::class, $categorieModif)->createView();
         }
+    }
 
 
        // lire les catégories
