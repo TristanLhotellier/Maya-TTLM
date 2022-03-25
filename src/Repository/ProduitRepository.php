@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Produit;
+use App\Entity\ProduitRecherche;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
+
 
 /**
  * @method Produit|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,30 +18,79 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProduitRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Produit::class);
     }
 
+//     /**
+//  * @return Product[]
+//  */
+// public function findAllGreaterThanPrice($prix): array
+// {
+//     $entityManager = $this->getEntityManager();
+
+//     // ce n'est pas du SQL mais du DQL : Doctrine Query Language
+//     // il s'agit en fait d'une requête classique mais qui référence l'objet au lieu de la table
+//     $query = $entityManager->createQuery(
+//         'SELECT p
+//         FROM App\Entity\Produit p
+//         WHERE p.prix > :prix
+//         ORDER BY p.prix ASC'
+//     )->setParameter('prix', $prix);
+
+//     // retourne un tableau d'objets de type Produit 
+//     return $query->getResult();
+// }
     /**
- * @return Product[]
- */
-public function findAllGreaterThanPrice($prix): array
-{
-    $entityManager = $this->getEntityManager();
+     * @return Query[]
+     */
+    public function findAllByCriteria(ProduitRecherche $produitRecherche): Query
+    {
+        // le "p" est un alias utilisé dans la requête
+        $qb = $this->createQueryBuilder('p')
+            ->orderBy('p.libelle', 'ASC');
 
-    // ce n'est pas du SQL mais du DQL : Doctrine Query Language
-    // il s'agit en fait d'une requête classique mais qui référence l'objet au lieu de la table
-    $query = $entityManager->createQuery(
-        'SELECT p
-        FROM App\Entity\Produit p
-        WHERE p.prix > :prix
-        ORDER BY p.prix ASC'
-    )->setParameter('prix', $prix);
+        if ($produitRecherche->getLibelle()) {
+            $qb->andWhere('p.libelle LIKE :libelle')
+                ->setParameter('libelle', $produitRecherche->getLibelle().'%');
+        }
 
-    // retourne un tableau d'objets de type Produit 
-    return $query->getResult();
-}
+        if ($produitRecherche->getPrixMini()) {
+            $qb->andWhere('p.prix >= :prixMini')
+                ->setParameter('prixMini', $produitRecherche->getPrixMini());
+        }
+
+        if ($produitRecherche->getPrixMaxi()) {
+            $qb->andWhere('p.prix < :prixMaxi')
+                ->setParameter('prixMaxi', $produitRecherche->getPrixMaxi());
+        }
+        return $qb->getQuery();
+
+        // $query = $qb->getQuery();
+        // return $query->execute();
+    }
+
+    /**
+    * @return Query[]
+    */
+   public function findAllOrderByLibelle(): Query
+   {
+       $entityManager = $this->getEntityManager();
+       $query = $entityManager->createQuery(
+           'SELECT p
+           FROM App\Entity\Produit p
+           ORDER BY p.libelle ASC'
+       );
+
+       return $query;
+
+       // retourne un tableau d'objets de type Produit
+       return $query->getResult();
+   }
+
+
 
 
     // /**
