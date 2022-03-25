@@ -82,6 +82,10 @@ class Produit
         return $this->dateCreation;
     }
 
+    public function __toString(){
+        return $this->getDateCreation();
+    }
+
     public function setDateCreation(\DateTimeInterface $dateCreation): self
     {
         $this->dateCreation = $dateCreation;
@@ -108,9 +112,9 @@ class Produit
     }
 
       /**
-     * @return Collection|Recette[]
+     * @return Collection|Recette[]|null
      */
-    public function getRecettes(): Collection
+    public function getRecettes(): ?Collection
     {
         return $this->recettes;
     }

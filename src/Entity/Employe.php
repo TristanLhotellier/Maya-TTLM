@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\EmployeRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=EmployeRepository::class)
@@ -20,13 +19,6 @@ class Employe
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *     min = 3,
-     *     max = 50,
-     *     minMessage = "Ce libellé est trop court",
-     *     maxMessage = "Ce libellé est trop long"
-     * )
      */
     private $Matricule;
 
