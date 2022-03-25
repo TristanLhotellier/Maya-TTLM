@@ -8,12 +8,12 @@ use App\Entity\Categorie;
 use App\Entity\Produit;
 use App\Entity\Recette;
 
-
 class ProduitFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $tbDataRecettes = ['ratatouille', 'clafoutis', 'tarte aux pommes', 'gratin dauphinois', 'salade Caesar', 'potée lorraine'];
+    $tbDataRecettes = ['ratatouille', 'clafoutis', 'tarte aux pommes', 'gratin dauphinois', 'salade Caesar', 'potée lorraine'];
+
         $tbDataProduits = [
             [ 'categorie' => 'Fruits',
             'produits' => [
@@ -64,8 +64,8 @@ class ProduitFixtures extends Fixture
                     $manager->persist($recette);
                 }
         
-                // créer les produits, leurs catégories et utiliser  aléatoirement des produits dans les recettes
-        
+                // créer les produits, leurs catégories et utiliser  aléatoirement des produits dans les recettes        
+
         for($i = 0; $i < count($tbDataProduits); ++$i) {
             // créer une catégorie
             $categorie = new Categorie();
@@ -79,7 +79,7 @@ class ProduitFixtures extends Fixture
                 // mettre en relation le produit avec la catégorie
                 $produit->setCategorie($categorie);
 
-                                // utiliser le produit dans des recettes de façon aléatoire
+                // utiliser le produit dans des recettes de façon aléatoire
                 //      au hasard, nombre N de recettes auxquelles le produit sera ajouté
                 $nbRecettes = rand(0, count($lesRecettes) - 1);
                 if ($nbRecettes > 0) {
@@ -104,6 +104,5 @@ class ProduitFixtures extends Fixture
 
         // exécuter les mises à jour de la base de données
         $manager->flush();
-
     }
 }
