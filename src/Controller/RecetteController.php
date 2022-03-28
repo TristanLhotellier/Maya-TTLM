@@ -11,7 +11,6 @@ use App\Entity\Recette;
 use App\Form\RecetteType;
 use Doctrine\ORM\EntityManagerInterface;
 
-
 class RecetteController extends AbstractController
 {
     /**
@@ -30,6 +29,7 @@ class RecetteController extends AbstractController
             // 'controller_name' => 'RecetteController',
         ]);
     }
+<<<<<<< HEAD
 
     /**
      * @Route("/recette/creer", name="recette_creer")
@@ -69,4 +69,6 @@ class RecetteController extends AbstractController
 
 
 
+=======
+>>>>>>> 7a2b46a6d75c413e0bd3ff004fdfca9679726eab
 }

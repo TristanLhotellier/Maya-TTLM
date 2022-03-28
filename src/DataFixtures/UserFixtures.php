@@ -8,7 +8,6 @@ use Doctrine\Persistence\ObjectManager;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-
 class UserFixtures extends Fixture
 {
     private $passwordEncoder;
@@ -34,11 +33,9 @@ class UserFixtures extends Fixture
             if ($i == 0) {
                 $user->setRoles(array("ROLE_USER", "ROLE_ADMIN"));
             }
-
             $manager->persist($user);
         }
 
         $manager->flush();
     }
-
 }
