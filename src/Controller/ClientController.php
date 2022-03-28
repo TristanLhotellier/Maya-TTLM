@@ -33,7 +33,7 @@ class ClientController extends AbstractController
             }
         }
 
-        // lire les catégories
+        // lire les clients
         $lesClients = $repository->findAll();
         return $this->render('client/index.html.twig', [
             'formCreation' => $formCreation->createView(),
