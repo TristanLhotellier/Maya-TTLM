@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 class RecetteType extends AbstractType
 {
@@ -24,11 +25,21 @@ class RecetteType extends AbstractType
             ->add('nom', TextType::class, [
                 'label' => 'Libellé'
             ])
+
+            ->add('description', TextType::class, [
+                'label' => 'Description'
+            ])
+
+            ->add('duree', TimeType::class, [
+                'label' => 'Durée',
+                'widget' => 'single_text',
+            ])
+
+
             ->add('produits', EntityType::class, [
-                'label' => 'Produits',
                 'class' => Produit::class,
                 'choice_label' => 'libelle',
-                'multiple' => false,
+                'multiple' => true,
                 'expanded' => false
             ])
         ;
