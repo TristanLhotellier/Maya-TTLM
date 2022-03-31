@@ -38,4 +38,3 @@ class ProduitRechercheType extends AbstractType
         ]);
     }
 }
-
