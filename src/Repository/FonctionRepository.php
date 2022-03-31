@@ -44,8 +44,9 @@ class FonctionRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    
 
-    /**
+/**
  * @return fonction_lc[]
  */
 public function findAllGreaterThanPrice(): array
@@ -65,6 +66,8 @@ public function findAllGreaterThanPrice(): array
     // retourne un tableau d'objets de type fonction 
     return $query->getResult();
 }
+
+
 
     // /**
     //  * @return Fonction[] Returns an array of Fonction objects

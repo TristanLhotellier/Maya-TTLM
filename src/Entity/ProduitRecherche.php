@@ -18,17 +18,20 @@ class ProduitRecherche
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=40)
+     *  @var string|null
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="float")
+     *  @var float|null
      */
     private $prixMini;
 
     /**
      * @ORM\Column(type="float")
+     *  @var float|null
      */
     private $prixMaxi;
 

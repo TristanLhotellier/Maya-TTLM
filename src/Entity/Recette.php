@@ -29,16 +29,6 @@ class Recette
      */
     private $produits;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $description;
-
-    /**
-     * @ORM\Column(type="time")
-     */
-    private $duree;
-
     public function __construct()
     {
         $this->produits = new ArrayCollection();
@@ -86,28 +76,6 @@ class Recette
 
         return $this;
     }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getDuree(): ?\DateTimeInterface
-    {
-        return $this->duree;
-    }
-
-    public function setDuree(\DateTimeInterface $duree): self
-    {
-        $this->duree = $duree;
-
-        return $this;
-    }
 }
+
+
