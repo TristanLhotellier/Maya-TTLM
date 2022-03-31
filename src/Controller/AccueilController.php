@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Categorie;
-use App\Repository\CategorieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,21 +9,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class AccueilController extends AbstractController
 {
     /**
-     * @Route("/accueil", name="accueil")
+     * @Route("/accueil", name="app_accueil")
      */
-    public function index(CategorieRepository $repository): Response
+    public function index(): Response
     {
-     
-        // lire les accueil
-       $lesCategories = $repository->findAll();
-       return $this->render('accueil/index.html.twig', [
-          // 'controller_name' => 'CategorieController',
-           'lesCategories' => $lesCategories,
-        
-       ]);
-
-           
-    
-     
+        return $this->render('accueil/index.html.twig', [
+            'controller_name' => 'AccueilController',
+        ]);
     }
 }

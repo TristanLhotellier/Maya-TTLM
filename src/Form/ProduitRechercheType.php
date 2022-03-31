@@ -14,22 +14,20 @@ class ProduitRechercheType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('libelle', TextType::class, [
-            'label' => 'Libellé',
-            'required' => false,
-        ])
-
-        
-        ->add('prixMini', MoneyType::class, [
-            'label' => 'Prix minimum',
-            'required' => false,
-            'invalid_message' => 'Nombre attendu'
-        ])
-        ->add('prixMaxi', MoneyType::class, [
-            'label' => 'Prix maximum',
-            'required' => false,
-            'invalid_message' => 'Nombre attendu'
-        ]);
+            ->add('libelle', TextType::class, [
+                'label' => 'Libellé',
+                'required' => false,
+            ])
+            ->add('prixMini', MoneyType::class, [
+                'label' => 'Prix minimum',
+                'required' => false,
+                'invalid_message' => 'Nombre attendu'
+            ])
+            ->add('prixMaxi', MoneyType::class, [
+                'label' => 'Prix maximum',
+                'required' => false,
+                'invalid_message' => 'Nombre attendu'
+            ]);
 
     }
 
