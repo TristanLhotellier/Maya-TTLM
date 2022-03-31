@@ -18,160 +18,125 @@ class Employe
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=25)
      */
-    private $Matricule;
+    private $nom;
+
+    /**
+     * @ORM\Column(type="string", length=25)
+     */
+    private $prenom;
 
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $Nom;
-
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $Prenom;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $Rue;
+    private $rue;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $CodePostal;
+    private $codePostal;
 
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $Ville;
+    private $ville;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
-    private $DateEmbauche;
+    private $dateEmbauche;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $Salaire;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Fonction::class, inversedBy="employes")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $Fonction;
+    private $salaire;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMatricule(): ?string
-    {
-        return $this->Matricule;
-    }
-
-    public function setMatricule(string $Matricule): self
-    {
-        $this->Matricule = $Matricule;
-
-        return $this;
-    }
-
     public function getNom(): ?string
     {
-        return $this->Nom;
+        return $this->nom;
     }
 
-    public function setNom(string $Nom): self
+    public function setNom(string $nom): self
     {
-        $this->Nom = $Nom;
+        $this->nom = $nom;
 
         return $this;
     }
 
     public function getPrenom(): ?string
     {
-        return $this->Prenom;
+        return $this->prenom;
     }
 
-    public function setPrenom(string $Prenom): self
+    public function setPrenom(string $prenom): self
     {
-        $this->Prenom = $Prenom;
+        $this->prenom = $prenom;
 
         return $this;
     }
 
     public function getRue(): ?string
     {
-        return $this->Rue;
+        return $this->rue;
     }
 
-    public function setRue(string $Rue): self
+    public function setRue(string $rue): self
     {
-        $this->Rue = $Rue;
+        $this->rue = $rue;
 
         return $this;
     }
 
     public function getCodePostal(): ?int
     {
-        return $this->CodePostal;
+        return $this->codePostal;
     }
 
-    public function setCodePostal(int $CodePostal): self
+    public function setCodePostal(int $codePostal): self
     {
-        $this->CodePostal = $CodePostal;
+        $this->codePostal = $codePostal;
 
         return $this;
     }
 
     public function getVille(): ?string
     {
-        return $this->Ville;
+        return $this->ville;
     }
 
-    public function setVille(string $Ville): self
+    public function setVille(string $ville): self
     {
-        $this->Ville = $Ville;
+        $this->ville = $ville;
 
         return $this;
     }
 
     public function getDateEmbauche(): ?\DateTimeInterface
     {
-        return $this->DateEmbauche;
+        return $this->dateEmbauche;
     }
 
-    public function setDateEmbauche(\DateTimeInterface $DateEmbauche): self
+    public function setDateEmbauche(\DateTimeInterface $dateEmbauche): self
     {
-        $this->DateEmbauche = $DateEmbauche;
+        $this->dateEmbauche = $dateEmbauche;
 
         return $this;
     }
 
     public function getSalaire(): ?int
     {
-        return $this->Salaire;
+        return $this->salaire;
     }
 
-    public function setSalaire(int $Salaire): self
+    public function setSalaire(int $salaire): self
     {
-        $this->Salaire = $Salaire;
-
-        return $this;
-    }
-
-    public function getFonction(): ?Fonction
-    {
-        return $this->Fonction;
-    }
-
-    public function setFonction(?Fonction $Fonction): self
-    {
-        $this->Fonction = $Fonction;
+        $this->salaire = $salaire;
 
         return $this;
     }

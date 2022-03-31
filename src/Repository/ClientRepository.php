@@ -3,10 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Client;
+use App\Entity\ClientRecherche;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Client|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,6 +23,51 @@ class ClientRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Client::class);
     }
+
+    /**
+     * @return Query
+     */
+    public function findAllByCriteria(ClientRecherche $clientRecherche): Query
+    {
+        // le "c" est un alias utilisé dans la requête
+        $qb = $this->createQueryBuilder('c')
+            ->orderBy('c.nom', 'ASC');
+
+        if ($clientRecherche->getTelephone()) {
+            $qb->andWhere('c.telephone LIKE :telephone')
+                ->setParameter('telephone', $clientRecherche->getTelephone().'%');
+        }
+
+        if ($clientRecherche->getNom()) {
+            $qb->andWhere('c.nom LIKE :nom')
+                ->setParameter('nom', $clientRecherche->getNom());
+        }
+
+        if ($clientRecherche->getPrenom()) {
+            $qb->andWhere('c.prenom LIKE :prenom')
+                ->setParameter('prenom', $clientRecherche->getPrenom());
+        }
+
+        return $qb->getQuery();
+        // $query = $qb->getQuery();
+        // return $query->execute();
+    }
+
+    /**
+    * @return Query
+    */
+   public function findAllOrderByLibelle(): Query
+   {
+       $entityManager = $this->getEntityManager();
+       $query = $entityManager->createQuery(
+           'SELECT c
+           FROM App\Entity\Client c
+           ORDER BY c.nom ASC'
+       );
+
+       // retourne un tableau d'objets de type Client
+       return $query;
+   }
 
     /**
      * @throws ORMException
