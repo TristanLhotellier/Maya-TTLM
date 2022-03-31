@@ -2,41 +2,38 @@
 
 namespace App\Form;
 
-use App\Entity\Client;
+use App\Entity\ClientRecherche;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class ClientType extends AbstractType
+class ClientRechercheType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class, [
-                'label' => 'Nom'])
-
-            ->add('prenom', TextType::class, [
-                'label' => 'Prenom'])
-
-            ->add('adresse', TextType::class, [
-                'label' => 'Adresse'])
-
-            ->add('mail', TextType::class, [
-                'label' => 'Mail'])
-
             ->add('telephone', TextType::class, [
-                'label' => 'Telephone'])
-                
-            ->add('relation', TextType::class, [
-                'label' => 'Relation'])
-        ;
+                'label' => 'Telephone',
+                'required' => false,
+            ])
+            ->add('nom', TextType::class, [
+                'label' => 'Nom',
+                'required' => true,
+                'invalid_message' => 'Texte attendu'
+            ])
+            ->add('prenom', TextType::class, [
+                'label' => 'Prenom',
+                'required' => false,
+                'invalid_message' => 'Texte attendu'
+            ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Client::class,
+            'data_class' => ClientRecherche::class,
         ]);
     }
 }

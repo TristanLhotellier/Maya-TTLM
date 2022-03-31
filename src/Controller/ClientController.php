@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Client;
-use App\Form\ClientType;
-use App\Repository\ClientRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\ClientRepository;
+use App\Form\ClientType;
+use App\Entity\ClientRecherche;
+use App\Form\ClientRechercheType;   
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Client;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 class ClientController extends AbstractController
 {
@@ -17,8 +21,49 @@ class ClientController extends AbstractController
      * @Route("/client", name="client")
      * @Route("/client/demandermodification/{id<\d+>}", name="client_demandermodification")
      */
-    public function index($id = null, ClientRepository $repository, Request $request): Response
+    public function index($id = null, ClientRepository $repository, Request $request, SessionInterface $session, PaginatorInterface $paginator): Response
     {
+                // créer l'objet et le formulaire de recherche
+                $clientRecherche = new ClientRecherche();
+                $formRecherche = $this->createForm(ClientRechercheType::class, $clientRecherche);
+                $formRecherche->handleRequest($request);
+                if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+                    $clientRecherche = $formRecherche->getData();
+                    // cherche les produits correspondant aux critères, triés par libellé
+                    // requête construite dynamiquement alors il est plus simple d'utiliser le querybuilder
+                    $LesClients = $repository->findAllByCriteria($clientRecherche);
+                // mémoriser les critères de sélection dans une variable de session
+                $session->set('ClientCriteres', $clientRecherche);
+                $lesClients= $paginator->paginate(
+                    $repository->findAllByCriteria($clientRecherche),
+                    $request->query->getint('page',1),
+                    5
+                );
+            } else {
+                // lire les produits
+                if ($session->has("ClientCriteres")) {
+
+                    $clientRecherche = $session->get("ClientCriteres");
+
+                        $clientRecherche = $session->get("ClientCriteres");
+                        // $lesClients = $repository->findAllByCriteria($clientRecherche);
+                        $lesClients= $paginator->paginate(
+                            $repository->findAllByCriteria($clientRecherche),
+                            $request->query->getint('page',1),
+                            5
+                        );        
+                        $formRecherche = $this->createForm(ClientRechercheType::class, $clientRecherche);
+                        $formRecherche->setData($clientRecherche);
+                    } else {
+                // $lesClients = $repository->findAllOrderByLibelle();
+                $c=new ClientRecherche();
+                $lesClients= $paginator->paginate(
+                    $repository->findAllOrderByLibelle($c),
+                    $request->query->getint('page',1),
+                    5
+                );
+            }
+        }
         // créer l'objet et le formulaire de création
         $client = new Client();
         $formCreation = $this->createForm(ClientType::class, $client);
@@ -33,13 +78,16 @@ class ClientController extends AbstractController
             }
         }
 
-        // lire les clients
-        $lesClients = $repository->findAll();
-        return $this->render('client/index.html.twig', [
+        // lire les catégories
+        // $lesClients = $repository->findAll();
+        // return $this->render('client/index.html.twig', [
+            return $this->render('client/index.html.twig', [
             'formCreation' => $formCreation->createView(),
-            'lesClients' => $lesClients,
+            // 'lesClients' => $lesClients,
             'formModification' => $formModificationView,
             'idClientModif' => $id,
+            'formRecherche' => $formRecherche->createView(),
+            'lesClients' => $lesClients,
         ]);
     }
 
@@ -76,12 +124,12 @@ class ClientController extends AbstractController
         }
 
         // lire les catégories
-        $lesClients = $repository->findAll();
-        return $this->render('client/index.html.twig', [
-            'formCreation' => $formCreation->createView(),
-            'lesClients' => $lesClients,
-            'formModification' => $formModificationView,
-            'nomClientModif' => $nom,
+        // $lesClients = $repository->findAll();
+            return $this->render('client/index.html.twig', [
+             'formCreation' => $formCreation->createView(),
+             'lesClients' => $lesClients,
+             'formModification' => $formModificationView,
+             'nomClientModif' => $nom,
         ]);
     }
 
@@ -124,6 +172,7 @@ public function ajouter(Client $client = null, Request $request, EntityManagerIn
         $lesClients = $repository->findAll();
         // rendre la vue
         return $this->render('client/index.html.twig', [
+            'formRecherche' => $formRecherche->createView(),
             'formCreation' => $form->createView(),
             'lesClients' => $lesClients,
             'formModification' => null,
