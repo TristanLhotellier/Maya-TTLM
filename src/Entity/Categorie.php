@@ -32,14 +32,25 @@ class Categorie
      */
     private $libelle;
 
+
+ 
     /**
      * @ORM\OneToMany(targetEntity=Produit::class, mappedBy="categorie")
      */
     private $produits;
 
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $couleur;
+
     public function __construct()
     {
         $this->produits = new ArrayCollection();
+    }
+
+    public function __toString(){
+        return $this->getLibelle();
     }
 
     public function getId(): ?int
@@ -52,12 +63,41 @@ class Categorie
         return $this->libelle;
     }
 
+   
     public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
 
         return $this;
     }
+
+   public function getChoixCouleur(): ?string 
+   {
+       $choixCouleur='';
+    if($this->couleur != null ){
+       if($this->couleur == 'rouge'){
+           $choixCouleur='card bg-danger';
+       }
+       elseif($this->couleur == 'gris'){
+           $choixCouleur='card bg-secondary';
+       }
+       elseif($this->couleur == 'bleu'){
+        $choixCouleur='card bg-primary';
+        }
+        elseif($this->couleur == 'vert'){
+            $choixCouleur='card bg-success';
+        }
+        elseif($this->couleur == 'jaune'){
+            $choixCouleur='card bg-warning';
+        }
+        elseif($this->couleur == 'blanc'){
+            $choixCouleur='card bg-light';
+        }
+        return $choixCouleur;
+        }
+    }
+
+   
 
     /**
      * @return Collection<int, Produit>
@@ -85,6 +125,18 @@ class Categorie
                 $produit->setCategorie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCouleur(): ?string
+    {
+        return $this->couleur;
+    }
+
+    public function setCouleur(string $couleur): self
+    {
+        $this->couleur = $couleur;
 
         return $this;
     }

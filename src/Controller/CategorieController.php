@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Categorie;
 use App\Form\CategorieType;
 use App\Repository\CategorieRepository;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class CategorieController extends AbstractController
 {
     /**
@@ -19,27 +21,31 @@ class CategorieController extends AbstractController
      */
     public function index($id = null, CategorieRepository $repository, Request $request): Response
     {
-        // créer l'objet et le formulaire de création
-        $categorie = new Categorie();
-        $formCreation = $this->createForm(CategorieType::class, $categorie);
 
-        // si 2e route alors $id est renseigné et on  crée le formulaire de modification
-        $formModificationView = null;
-        if ($id != null) {
-            // sécurité supplémentaire, on vérifie le token
-            if ($this->isCsrfTokenValid('action-item'.$id, $request->get('_token'))) {
-                $categorieModif = $repository->find($id);   // la catégorie à modifier
-                $formModificationView = $this->createForm(CategorieType::class, $categorieModif)->createView();
-            }
+         // créer l'objet et le formulaire de création
+         $categorie = new Categorie();
+         $formCreation = $this->createForm(CategorieType::class, $categorie);
+        
+            // si 2e route alors $id est renseigné et on  crée le formulaire de modification
+    $formModificationView = null;
+    if ($id != null) {
+        // sécurité supplémentaire, on vérifie le token
+        if ($this->isCsrfTokenValid('action-item'.$id, $request->get('_token'))) {
+            $categorieModif = $repository->find($id);   // la catégorie à modifier
+            $formModificationView = $this->createForm(CategorieType::class, $categorieModif)->createView();
         }
+    }
 
-        // lire les catégories
-        $lesCategories = $repository->findAll();
+   
+       // lire les catégories
+       $lesCategories = $repository->findAll();
         return $this->render('categorie/index.html.twig', [
-            'formCreation' => $formCreation->createView(),
+           // 'controller_name' => 'CategorieController',
+           'formCreation' => $formCreation->createView(),
             'lesCategories' => $lesCategories,
             'formModification' => $formModificationView,
             'idCategorieModif' => $id,
+
         ]);
     }
 
@@ -88,6 +94,7 @@ public function ajouter(Categorie $categorie = null, Request $request, EntityMan
             'idCategorieModif' => null,
         ]);
     }
+
 }
 
 /**
@@ -126,28 +133,30 @@ public function modifier(Categorie $categorie = null, $id = null, Request $reque
     }
 }
 
-    /**
-    * @Route("/categorie/supprimer/{id<\d+>}", name="categorie_supprimer")
-    */
-    public function supprimer(Categorie $categorie = null, Request $request, EntityManagerInterface $entityManager)
-    {
-        // vérifier le token
-        if ($this->isCsrfTokenValid('action-item'.$categorie->getId(), $request->get('_token'))) {
-            if ($categorie->getProduits()->count() > 0) {
-                $this->addFlash(
-                    'error',
-                    'Il existe des produits dans la catégorie ' . $categorie->getLibelle() . ', elle ne peut pas être supprimée.'
-                );
-                return $this->redirectToRoute('categorie');
-            }
-            // supprimer la catégorie
-            $entityManager->remove($categorie);
-            $entityManager->flush();
+/**
+ * @Route("/categorie/supprimer/{id<\d+>}", name="categorie_supprimer")
+ */
+public function supprimer(Categorie $categorie = null, Request $request, EntityManagerInterface $entityManager)
+{
+     // vérifier le token
+    if ($this->isCsrfTokenValid('action-item'.$categorie->getId(), $request->get('_token'))) {
+        if ($categorie->getProduits()->count() > 0) {
             $this->addFlash(
-                'success',
-                'La catégorie ' . $categorie->getLibelle() . ' a été supprimée.'
+                'error',
+                'Il existe des produits dans la catégorie ' . $categorie->getLibelle() . ', elle ne peut pas être supprimée.'
             );
+            return $this->redirectToRoute('categorie');
         }
-        return $this->redirectToRoute('categorie');
+        // supprimer la catégorie
+        $entityManager->remove($categorie);
+        $entityManager->flush();
+        $this->addFlash(
+            'success',
+            'La catégorie ' . $categorie->getLibelle() . ' a été supprimée.'
+        );
     }
+    return $this->redirectToRoute('categorie');
+}
+
+
 }

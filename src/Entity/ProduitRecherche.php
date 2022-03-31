@@ -2,72 +2,77 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\ProduitRechercheRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @ORM\Entity(repositoryClass=ProduitRechercheRepository::class)
+ */
 class ProduitRecherche
 {
     /**
-     * @var string|null
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=40)
+     *  @var string|null
      */
     private $libelle;
+
     /**
-     * @var float|null
+     * @ORM\Column(type="float")
+     *  @var float|null
      */
     private $prixMini;
+
     /**
-     * @var float|null
+     * @ORM\Column(type="float")
+     *  @var float|null
      */
     private $prixMaxi;
 
-    /**
-     * @return string|null
-     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getLibelle(): ?string
     {
         return $this->libelle;
     }
 
-    /**
-     * @param string|null $libelle
-     */
-    public function setLibelle(?string $libelle): void
+    public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
+
+        return $this;
     }
 
-    /**
-     * @return float|null
-     */
     public function getPrixMini(): ?float
     {
         return $this->prixMini;
     }
 
-    /**
-     * @param float|null $prixMini
-     */
-    public function setPrixMini(?float $prixMini): void
+    public function setPrixMini(float $prixMini): self
     {
         $this->prixMini = $prixMini;
+
+        return $this;
     }
 
-    /**
-     * @return float|null
-     */
     public function getPrixMaxi(): ?float
     {
         return $this->prixMaxi;
     }
 
-    /**
-     * @param float|null $prixMaxi
-     */
-    public function setPrixMaxi(?float $prixMaxi): void
+    public function setPrixMaxi(float $prixMaxi): self
     {
         $this->prixMaxi = $prixMaxi;
-    }
 
+        return $this;
+    }
 }

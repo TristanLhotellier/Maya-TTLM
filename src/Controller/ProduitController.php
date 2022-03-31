@@ -2,73 +2,103 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use App\Repository\ProduitRepository;
+
+use App\Entity\Produit;
+use App\Entity\Categorie;
 use App\Form\ProduitType;
-use App\Entity\ProduitRecherche;
-use App\Form\ProduitRechercheType;   
+use App\Repository\ProduitRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Produit;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use App\Entity\ProduitRecherche;
+use App\Form\ProduitRechercheType;   
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Knp\Component\Pager\PaginatorInterface;
+
+
 
 class ProduitController extends AbstractController
 {
     /**
      * @Route("/produit", name="produit")
+     * @Route("/produit/menu", name="produit_menu")
+     * @Route("/produit/categoriecards/{id<\d+>}", name="produit_categoriecards")
      */
-    public function index(Request $request, ProduitRepository $repository, SessionInterface $session, PaginatorInterface $paginator): Response
+    public function index(Categorie $categorie = null, Request $request, ProduitRepository $repository, SessionInterface $session, PaginatorInterface $paginator): Response
     {
-        // créer l'objet et le formulaire de recherche
-        $produitRecherche = new ProduitRecherche();
-        $formRecherche = $this->createForm(ProduitRechercheType::class, $produitRecherche);
-        $formRecherche->handleRequest($request);
-        if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
-            $produitRecherche = $formRecherche->getData();
-            // cherche les produits correspondant aux critères, triés par libellé
-            // requête construite dynamiquement alors il est plus simple d'utiliser le querybuilder
-            $lesProduits = $repository->findAllByCriteria($produitRecherche);
-        // mémoriser les critères de sélection dans une variable de session
-        $session->set('ProduitCriteres', $produitRecherche);
-        $lesProduits= $paginator->paginate(
-            $repository->findAllByCriteria($produitRecherche),
-            $request->query->getint('page',1),
-            5
-        );
-    } else {
-        // lire les produits
-        if ($session->has("ProduitCriteres")) {
+        //récupérer la route courante
+        $routeCourante = $request->attributes->get('_route');
+        //si demande à partir du menu Produits, on efface les variables de session concernant la recherche
+        if($routeCourante == 'produit_menu'){
+            $session->remove('Categorie', $categorie);
+            $session->remove("ProduitCriteres");
 
-            $produitRecherche = $session->get("ProduitCriteres");
-           // $lesProduits = $repository->findAllByCriteria($produitRecherche);
-           $lesProduits= $paginator->paginate(
-            $repository->findAllByCriteria($produitRecherche),
+        }else{
+            if($categorie != null){
+                //mémoriser la catégorie dans une variable de session
+                $session->set('Categorie', $categorie);
+            }else{
+                if($session->has("Categorie")){
+                    $categorie = $session->get("Categorie");
+                }
+            }
+        }
+
+      // créer l'objet et le formulaire de recherche
+      $produitRecherche = new ProduitRecherche();
+      $formRecherche = $this->createForm(ProduitRechercheType::class, $produitRecherche);
+      $formRecherche->handleRequest($request);
+      if ($formRecherche->isSubmitted() && $formRecherche->isValid()) {
+          $produitRecherche = $formRecherche->getData();
+          // cherche les produits correspondant aux critères, triés par libellé
+          // requête construite dynamiquement alors il est plus simple d'utiliser le querybuilder
+          $lesProduits = $repository->findAllByCriteria($produitRecherche, $categorie);
+          $session->set('ProduitCriteres', $produitRecherche);
+          $lesProduits= $paginator->paginate(
+            $repository->findAllByCriteria($produitRecherche , $categorie),
             $request->query->getint('page',1),
             5
         );
-            $formRecherche = $this->createForm(ProduitRechercheType::class, $produitRecherche);
-            $formRecherche->setData($produitRecherche);
+
         } else {
-            // $lesProduits = $repository->findAllOrderByLibelle();
-            $p=new ProduitRecherche();
+            // lire les produits
+            if ($session->has("ProduitCriteres")) {
+
+                $produitRecherche = $session->get("ProduitCriteres");
                 $lesProduits= $paginator->paginate(
-                    $repository->findAllOrderByLibelle($p),
+                    $repository->findAllByCriteria($produitRecherche, $categorie),
                     $request->query->getint('page',1),
                     5
                 );
+
+            } else {
+                $p=new ProduitRecherche();
+                $lesProduits= $paginator->paginate(
+                    $repository->findAllOrderByLibelle($categorie),
+                    $request->query->getint('page',1),
+                    5
+                );
+
+            }
         }
-    }
 
-        // $lesProduits = $repository->findAll();
-        return $this->render('produit/index.html.twig', [
-            'formRecherche' => $formRecherche->createView(),
-            'lesProduits' => $lesProduits,
-        ]);
-    }
+      
 
+
+      // lire les produit
+       return $this->render('produit/index.html.twig', [
+          // 'controller_name' => 'produitController',
+          'formRecherche' => $formRecherche->createView(),
+           'lesProduits' => $lesProduits,
+           
+       ]);
+   }
+
+   /**
+* @Route("/produit/ajouter", name="produit_ajouter")
+*/
     /**
      * @Route("/produit/ajouter", name="produit_ajouter")
      */
@@ -96,7 +126,8 @@ class ProduitController extends AbstractController
         }
     }
 
-    /**
+
+/**
  * @Route("/produit/modifier/{id<\d+>}", name="produit_modifier")
  */
 public function modifier(Produit $produit = null, Request $request, EntityManagerInterface $entityManager): Response
@@ -121,6 +152,8 @@ public function modifier(Produit $produit = null, Request $request, EntityManage
     ]);
 }
 
+
+
     /**
      * @Route("/produit/supprimer/{id<\d+>}", name="produit_supprimer")
      */
@@ -138,3 +171,4 @@ public function modifier(Produit $produit = null, Request $request, EntityManage
         }
     }
 }
+

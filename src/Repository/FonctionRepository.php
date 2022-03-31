@@ -44,6 +44,30 @@ class FonctionRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    
+
+/**
+ * @return fonction_lc[]
+ */
+public function findAllGreaterThanPrice(): array
+{
+    $entityManager = $this->getEntityManager();
+
+    // ce n'est pas du SQL mais du DQL : Doctrine Query Language
+    // il s'agit en fait d'une requête classique mais qui référence l'objet au lieu de la table
+    $query = $entityManager->createQuery(
+        'SELECT f.LibFonction, COUNT(e.id) AS nbEmploye , MIN(e.Salaire) AS MinSalaire, MAX(e.Salaire) AS maxSalaire
+        FROM App\Entity\Fonction f
+        JOIN f.employes e
+        GROUP BY f.id
+        ORDER BY f.LibFonction ASC'
+    );
+
+    // retourne un tableau d'objets de type fonction 
+    return $query->getResult();
+}
+
+
 
     // /**
     //  * @return Fonction[] Returns an array of Fonction objects
