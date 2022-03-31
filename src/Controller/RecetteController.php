@@ -10,6 +10,7 @@ use App\Entity\Produit;
 use App\Entity\Recette;
 use Doctrine\ORM\EntityManagerInterface;
 
+
 class RecetteController extends AbstractController
 {
     /**
@@ -21,4 +22,6 @@ class RecetteController extends AbstractController
             'controller_name' => 'RecetteController',
         ]);
     }
+
+
 }

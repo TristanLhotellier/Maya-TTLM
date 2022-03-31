@@ -1,87 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AccueilController!{% endblock %}
-
 {% block body %}
-<?php
-
-$cleAPI = "701464d1db391e21728f7cf84d22e2f5";
-$ville = "metz";
-
-// Définir l'url
-$urlAPI = "http://api.openweathermap.org/data/2.5/weather?q=" . $ville . "&lang=fr&units=metric&APPID=" . $cleAPI;
-// Initialiser une session CURL
-$clientURL = curl_init();
-// Récupérer le contenu 
-curl_setopt($clientURL, CURLOPT_RETURNTRANSFER, 1);
-// Transmettre l'URL
-curl_setopt($clientURL, CURLOPT_URL, $urlAPI);
-// Exécutez la requête HTTP
-$reponse = curl_exec($clientURL);
-// Fermer la session
-curl_close($clientURL);
-// Récupérer les données au format JSON
-$donnees = json_decode($reponse);
-
-$dateJour = new DateTime('now', new DateTimeZone('Europe/Paris'));
-
-?>
-<!doctype html>
-<html>
-<head>
-<title> La météo à la ferme</title>
-
-<style>
-    .conteneur {
-        background-color: #f1f8e9;
-        border: 2px solid #689f38;
-        border-radius: 6px;
-        line-height: 25px;
-        font-family: Arial;
-        color: #859288;
-        padding: 20px;
-        width: 300px;
-        margin: 0 auto;
-        box-shadow: 5px 5px 10px #689f38;
-    }
-
-    h2 {
-        text-align: center;
-        text-shadow: 2px 2px 5px #689f38;
-    }
-
-    .temps-icone {
-        vertical-align: middle;
-        margin-right: 20px;
-    }
-
-    .temps-previsions {
-        font-size: 1.2em;
-        font-weight: bold;
-    }
-
-    span.temperature {
-        margin-left: 15px;
-    }
-</style>
-
-</head>
-
-<body>
-
-    <div class="conteneur">
-        <h2>Le temps à {{ donneesTemps.name }}</h2>
-        <div>Le {{"now" | date("d/m/Y")}}</div>
-        <div class="temps-previsions">{{donneesTemps.weather[0].description | capitalize }}</div>
-        <div class="temps-previsions">
-            <img src="http://openweathermap.org/img/w/<?php echo $donnees->weather[0]->icon; ?>.png" class="temps-icone" />
-            {{ donneesTemps.main.temp_max | number_format(2, ',') | trim("0", "right") | trim(',') }}
-            <span class="temperature">&deg;C</span>
-        </div>
-        <div>Humidité : {{ donneesTemps.main.humidity }} %</div>
-        <div>Vent : {{ donneesTemps.wind.speed }} km/h</div>
-    </div>
-
-</body>
-</html>
+<div class="col-md-12 contenu-blanc">
+<h1>Les catégories de produit</h1>
+{{ include('messages.html.twig') }}
+<div class="card-columns">
+    {% for key, categorie in lesCategories %}                           
+             
+                <div class= "{{categorie.getChoixCouleur()}}">
+                    <div class="card-body text-center" >
+                    <p class="card-text" > <h4><a class="nav-link" style="color:black;" href="{{ path('produit_categoriecards', {'id' : categorie.id}) }}">{{categorie.libelle}} </a></h4></p>
+                    </div>
+                </div>
+    {% endfor %}
+            
 {% endblock %}
